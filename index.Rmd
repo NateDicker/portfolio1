@@ -1,0 +1,39 @@
+---
+title: "Portfolio"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+***
+
+### Welcome!
+
+I'm Nate Dicker a problem solver passionate about
+extracting insights from complex problems and communicating findings to
+drive business decisions.
+What I Do I specialize in:
+
+- 📊 Data Analysis: Cleaning, transforming, and analyzing business data
+- 📈 Visualization: Creating clear, compelling charts with ggplot2
+- 📝 Reporting: Building professional reports that tell data stories
+- 🔍 Problem Solving: Applying statistical thinking to real-world
+challenges
+
+In the project section, you'll see analyses covering:
+
+- Data-driven management analyses
+- Data-driven business report
+- Data Backed business recommendations
+
+
+Technical Skills:
+
+- Tools: R, RStudio, R Markdown, ggplot2, dplyr
+
+- Analysis: Data cleaning, exploratory analysis, statistical visualization
+Communication: Report generation, data storytelling, executive summaries
+
+***
+

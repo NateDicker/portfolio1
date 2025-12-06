@@ -1,0 +1,38 @@
+
+---
+title: "Projects"
+---
+
+### Project 1: Data-Driven Management Analysis
+
+**Objective:** A staffing agency is planning to expand its operations to Texas and must identify the industries and counties that have demonstrated the largest number of layoffs.
+
+**Key Skills:**
+
+- Data Cleaning
+- Data quality assessment
+- Comprehensive Data Analysis
+- Professional Visual Analytics
+- Business recommendation 
+
+[View detailed analysis →](project1.html)
+
+---
+
+### Project 2: Business Insights Report
+
+**Objective:** Provide a specific recommendation to help a business drive more revenue based off of the provided data.
+
+**Key Skills:**
+
+- Data Cleaning
+- Aggregate Summary s
+- Professional Visual Analytics
+- Specific Financial Recommendation
+
+[View detailed analysis →](project2.html)
+
+---
+
+
+[← Back to Home](index.html)

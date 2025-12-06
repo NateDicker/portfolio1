@@ -1,0 +1,179 @@
+---
+title: "Business Insights Report"
+---
+
+
+```{r, include=FALSE}
+business_data <- read.csv("data/business_performance.csv")
+
+library(ggplot2)
+```
+
+***
+
+## Section 1: General Data Analysis
+
+```{r}
+
+str(business_data)
+
+summary(business_data)
+
+unique(business_data$channel)
+```
+
+ <u>Quarter</u>
+
+The data called **quarter** is either:
+
+- Q1 January–March
+- Q2 April–June
+- Q3 July–September
+- Q4 October–December
+
+This demonstrates that **quarter** is numerical data referring to a specific quarter of the year.
+
+ <u>Channel</u>
+
+The data called **"channel"** is referring to the source of different revenue streams, which include the following:
+
+- Online
+- Mobile 
+- Retail
+
+<u>Revenue</u>
+
+The range of revenue values goes from a minimum of **$150,230** to a maximum of **$412,125.**
+
+
+***
+
+## Section 2: Data Summeries
+
+```{r}
+
+channel_totals <- aggregate(revenue ~ channel, data = business_data, FUN = sum)
+
+channel_totals
+
+aggregate(customers ~ quarter, data = business_data, FUN = mean)
+
+```
+
+<u>Total Revenue</u>
+
+The **online** channel generates the most revenue overall.
+
+<u>Customers In Quarters</u>
+
+**Quarter 3 (Q3)** has the most customers.
+
+***
+
+
+```{r}
+business_data$revenue_per_customer <- business_data$revenue / business_data$customers
+
+aggregate(revenue_per_customer ~ channel, 
+                         data = business_data, 
+                         FUN = mean)
+```
+<u>Highest Average Revenue Per Customer </u>
+
+The **retail** location has the highest average revenue per customer. This tells us that the retail locations have a sales advantage that could be due to many different reasons such as better upselling, better marketing or different consumer behavior psychology of in-person shopping.
+
+***
+
+## Section 3: Professional Visual Analytics
+
+
+```{r}
+# Turned Off Scientific Notation For Ease Of Understanding
+options(scipen = 999)
+
+
+channel_totals <- aggregate(revenue ~ channel, data = business_data, sum)
+
+ggplot(channel_totals, aes(x = channel, y = revenue)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Revenue by Channel", 
+       x = "Sales Channel", y = "Revenue ($)")
+```
+
+
+<u> Investnment Allocation </u> 
+
+The channel with the highest total revenue is online followed by mobile than retail. Therefore, based off this data visualization the online channel should receive more investment because it already demonstrates the highest profitability.
+
+
+***
+
+
+```{r}
+ggplot(business_data, aes(x = customers, y = revenue, color = channel)) +
+  geom_point(size = 3) +
+  labs(title = "Customer Count vs Revenue by Channel",
+       x = "Number of Customers", y = "Revenue ($)")
+
+```
+
+<u> Conversion Of Customers to revenue </u> 
+
+The scatter plot shows that although mobile and online channels make the most profit they also have significantly more customer reach then the physical retail channel. This demonstrates that the most efficient channel to convert customers to revenue is **retail** because it has a very small reach but still demonstrate **high relative profits.**
+
+***
+ 
+
+
+## Section 4: Summary and Recommendations
+
+```{r performance-table} 
+
+# I was having issues with CBIND so i used mergers instead.
+
+library(knitr)
+
+
+avg_customers <- aggregate(customers ~ channel, data = business_data, FUN = mean)
+
+
+avg_conversion <- aggregate(conversion_rate ~ channel, data = business_data, FUN = mean)
+
+# Merging data.
+
+performance_summary <- merge(channel_totals, avg_customers, by = "channel")
+
+# Merging avg_conversion into preformance summary beacause merging can only be done two at a time.
+
+performance_summary <- merge(performance_summary, avg_conversion, by = "channel")
+
+# Digits @ 2 is specfically important for "avg conversion rate". 
+
+kable(
+  performance_summary,
+  digits = 2,
+  caption = "Channel Performance Summary",
+  col.names = c("Channel", "Total Revenue ($)", "Average Customers", "Average Conversion Rate (%)")
+)
+```
+
+***
+
+
+<u> Strategic Reconmmendation </u> 
+
+In [Section 2.2](#link) and [Section 1.3](#link2) it is demonstrated that the retail channel convertes customers to revenue most efficiently. The data in [Section 1.3](#link2) demonstrates the following: 
+
+**Revenue Per Customer**
+
+- Mobile 202.8074
+- Online 224.3320
+- **Retail 314.2239**
+
+In other words, the retail channel demonstrates the highest profit per customer. Therefore Increased **in-store promotions** should be created to help drive more traffic and take advantage of retail stores high conversion rate of **5.03%.**
+
+***
+
+---
+
+[← Back to Projects](projects.html) | [← Back to Home](index.html)

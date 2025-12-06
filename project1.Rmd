@@ -1,0 +1,286 @@
+---
+title: "Data-Driven Management Analysis"
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+***
+
+## Section 1: Business Problem Definition and Context
+ 
+ 
+A staffing agency is planning to expand its operations to Texas and must identify the industries and counties that have demonstrated the largest number of layoffs. Using the Texas Worker Adjustment and Retraining Notification (WARN) data from recent years (2023–2025), the agency will determine the industries and counties where the majority of workers have been laid off.
+
+***
+
+## Section 2: Data Source Assessment
+
+
+### A. Data Source Documentation
+
+The data used is this analysis is sourced from the government of Texas Workforce commission and can be accessed from the following [link](https://data.texas.gov/dataset/Worker-Adjustment-and-Retraining-Notification-WARN/8w53-c4f6/about_data). This data is originally a collection of all WARN act notices in Texas. The official description of th WARN act is quote "The WARN Act is intended to offer protection to workers, their families and communities" (para. 1). In other words, the WARN act provides protection by legally requiring employers to supply a 60 day notice of layoffs. Furthermore, this data covers 2019 to 2025, and although the update frequency is not explicitly stated, the sourced data set is current of this analysis (2025-11-25), which suggests it is updated as new WARN reports are submitted. Lastly, this data is limited to larger firms as the WARN act applies only to business with 100+ employees.
+
+***
+
+### B. Access Method Implementation
+
+```{r}
+
+# Load the CSV file
+business_data <- read.csv("data/WorkerAdjustment.csv")
+
+
+```
+<u>Data Import Method</u>
+
+The data is accessed through a **locally imported** CSV file.
+
+***
+
+### C. Data Quality Assessment
+
+
+```{r}
+
+dim(business_data) # Verify rows > 500 and columns >= 5
+```
+<u>Amount Of Data</u>
+
+The data contains **2270 rows** and a **8 Columns**.
+
+***
+
+```{r}
+
+# This exists to change the date values and the lay off numbers to numeric, and to further change the date values to the specific m/d/y format to allow for relevant (2023-2025) date filters later on.
+business_data$TOTAL_LAYOFF_NUMBER <- as.numeric(business_data$TOTAL_LAYOFF_NUMBER)
+
+
+business_data$NOTICE_DATE <- as.Date(business_data$NOTICE_DATE, format = "%m/%d/%Y")
+business_data$LayOff_Date <- as.Date(business_data$LayOff_Date, format = "%m/%d/%Y")
+business_data$WFDD_RECEIVED_DATE <- as.Date(business_data$WFDD_RECEIVED_DATE, format = "%m/%d/%Y")
+
+
+library(ggplot2)
+library(dplyr)
+
+filtered_data <- business_data %>%
+  filter(LayOff_Date >= as.Date("2023-01-01") &
+         LayOff_Date <= as.Date("2025-12-31"))
+
+
+```
+<u>Data Cleaning</u>
+
+This helps to clean the data by changing the appropriate **categorical information to numerical** and it **filters out irreverent dates** that are before 2023.
+
+***
+```{r}
+str(business_data) 
+```
+<u>Categorical and Numerical Values</u>
+
+The data contains a total of **four categorical variables**:
+
+- Job Site Name
+- County Name
+- WDA Name
+- City Name
+
+
+and **two relevant numerical variables**:
+
+- Total Layoffs
+- Lay Off Date
+
+
+***
+
+```{r}
+
+colSums(is.na(business_data))
+```
+
+
+```{r}
+
+(colSums(is.na(business_data)) / nrow(business_data)) * 100
+sapply(business_data, function(x) length(unique(x)))
+```
+
+<u>Missing Values</u>
+
+The Missing Values is minimal with the following (rounded to two decimal places):
+
+- **Total Lay Off**: 0.57%
+- **Lay Off Date**: 0.31%
+
+<u>Unique Values</u>
+
+There is also a significant amount of unique values in expected categories such as:
+
+- **Job Site Name**: 2182
+- **Lay Off Date**: 696
+- **Notice Date**: 669
+
+These unique values are expected due to the randomness that occurs with each WARN entry, specifically the many different firms, locations and dates in which they occurred.
+
+***
+
+<u>Data Quality Summary</u>
+
+This data is reliable as the minimal missing values of Total Lay Off is at 0.57% and Lay Off Date is at 0.31% which amounts to **only 0.88%**; the data is also sourced from the **government of Texas** which indicates reliability. Furthermore, the data has been further cleaned to change the appropriate values to a numeric identification and to **filter out the dates we decided are irreverent to decision making** (Before 2023).Lastly, This data supports the decision of choosing an industry and location that have seen the most amount of layoffs in recent years.
+
+***
+
+## Section 3: Comprehensive Data Analysis
+
+
+### A. Descriptive Analytics:
+
+#### 1
+
+```{r}
+county_totals <- aggregate(
+filtered_data$TOTAL_LAYOFF_NUMBER,
+by = list(County = filtered_data$COUNTY_NAME),
+FUN = sum,
+na.rm = TRUE
+)
+county_totals
+```
+
+<u>Total Lay Offs Per County</u>
+
+This function allows us to view the total layoffs in each county. This can be used to identity which numbers that are large and stand out so we can further analyze.
+
+***
+
+#### 2
+
+```{r}
+
+avg_layoff_notice <- filtered_data %>%
+summarise(average_notice_size = mean(TOTAL_LAYOFF_NUMBER, na.rm = TRUE))
+avg_layoff_notice
+```
+<u>Average Lay Off notice</u>
+
+This Function allows us to view the average scale of a layoff event in taxes.
+
+#### 3
+
+<u>Aggregate Summary</u>
+
+Together, these summaries highlight where layoffs are concentrated and how large they tend to be, which are key metrics for our staffing agency to consider.
+
+***
+
+### B. Professional Visual Analytics
+
+#### 1
+```{r}
+library(ggplot2)
+library(dplyr)
+
+
+
+
+layoffs_by_county <- filtered_data %>%
+  group_by(COUNTY_NAME) %>%
+  summarise(total_layoffs = sum(TOTAL_LAYOFF_NUMBER, na.rm = TRUE)) %>%
+  arrange(desc(total_layoffs)) %>%
+  slice(1:10)
+
+
+ggplot(layoffs_by_county, aes(x = reorder(COUNTY_NAME, total_layoffs),
+                              y = total_layoffs)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Counties by Total Layoffs (2023–2025)",
+       x = "County",
+       y = "Total Layoffs")
+```
+
+<u>Highest Layoffs</u>
+
+This visualization allows us to see **counties rated by their highest amount of layoffs in recent years**. 
+
+***
+
+#### 2
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+avg_layoff_per_site <- filtered_data %>%
+  group_by(JOB_SITE_NAME) %>%
+  summarise(avg_layoff = mean(TOTAL_LAYOFF_NUMBER, na.rm = TRUE)) %>%
+  arrange(desc(avg_layoff)) %>%
+  slice(1:10)
+
+
+ggplot(avg_layoff_per_site, aes(x = reorder(JOB_SITE_NAME, avg_layoff), 
+                                y = avg_layoff)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Employers by Avg Layoff Size (2023–2025)",
+       x = "Employer (Job Site Name)",
+       y = "Average Layoff Size")
+
+```
+
+<u>Average Layoff Size For Employers</u>
+
+This visualization allows us to see the **firms with the highest average layoff size**. 
+
+***
+
+#### 3
+```{r}
+ggplot(filtered_data, aes(x = LayOff_Date, y = TOTAL_LAYOFF_NUMBER)) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "loess", se = FALSE) +
+labs(title = "Layoff Size Over Time (2023–2025)",
+x = "Layoff Date",
+y = "Layoff Size (Number of Workers)") +
+theme_minimal()
+```
+
+<u>Lay Off Trends</u>
+
+This scatter plot shows how **layoff sizes vary across time from 2023–2025**. 
+
+***
+
+### C. Professional Visual Analytics
+
+The data visualization indicates three distinct insights. First there is a time trend with layoff size **peaking in 2023** and **tapering off towards 2025** but the key is that is remained relatively constant. The other insight is the top three highest employers layoff sizes are the following:
+
+- **Texas Children Hospital**
+- Gen Pact LLC
+- **South West General Hospital**
+
+This shows that two of the top three industries are health care related. Lastly, the counties with the highest layoffs are:
+
+- Dallas 
+- Harris
+- Travis
+- Tarrant
+
+This demonstrates that the layoffs by county is heavily correlated with population size.
+
+***
+
+## Section 4: Strategic Recommendations
+
+The staffing agency is recommended to **expand to one of the highest cites by highest total layoffs ** with the following: Dallas, Harris, Travis and Tarrant demonstrating significantly more Layoffs then other counties. Furthermore, based on the lay off trend line there is distinct clustering  which suggests that mass lay offs happen in waves rather isolated incidents. The staffing agency is recommended to **identity some of the patterns of these occurrences in Texas**. Then there is a trend in recent years with two of the top three industry lay offs being related to health care. This demonstrates a strong opportunity to **temporarily focus on this industry to take advantage of its potential staffing demand**. Overall, the staffing agency should chose a city out of the four listed above, identify economic patterns related to lay offs in Texas and temporary focus on taking advantage of the demand in the health care industry.'
+
+---
+
+[← Back to Projects](projects.html) | [← Back to Home](index.html)

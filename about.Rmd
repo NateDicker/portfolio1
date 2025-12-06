@@ -1,0 +1,34 @@
+
+---
+title: "About"
+---
+
+I'm a second-year student at VIU, further developing my skills in in financial and data analyses.
+
+***
+
+## Education
+
+**VIU** - Finance Program 
+*Expected Graduation: [2027]*
+
+Relevant Coursework:
+
+- Data Analysis for E-Management
+- Business Statistics
+- Financial Analysis
+
+***
+
+## Contact
+
+📧 NateDicker@icloud.com
+
+💼 [LinkedIn](https://www.linkedin.com/in/nate-dicker-2a0917299/?originalSubdomain=ca)
+
+💻 [GitHub](https://github.com/NateDicker)
+
+
+---
+
+[← Back to Home](index.html)
