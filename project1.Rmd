@@ -31,7 +31,7 @@ The data used is this analysis is sourced from the government of Texas Workforce
 ```{r}
 
 # Load the CSV file
-business_data <- read.csv("data/WorkerAdjustment.csv")
+business_data <- read.csv("WorkerAdjustment.csv")
 
 
 ```
@@ -282,5 +282,6 @@ This demonstrates that the layoffs by county is heavily correlated with populati
 The staffing agency is recommended to **expand to one of the highest cites by highest total layoffs ** with the following: Dallas, Harris, Travis and Tarrant demonstrating significantly more Layoffs then other counties. Furthermore, based on the lay off trend line there is distinct clustering  which suggests that mass lay offs happen in waves rather isolated incidents. The staffing agency is recommended to **identity some of the patterns of these occurrences in Texas**. Then there is a trend in recent years with two of the top three industry lay offs being related to health care. This demonstrates a strong opportunity to **temporarily focus on this industry to take advantage of its potential staffing demand**. Overall, the staffing agency should chose a city out of the four listed above, identify economic patterns related to lay offs in Texas and temporary focus on taking advantage of the demand in the health care industry.'
 
 ---
+
 
 [← Back to Projects](projects.html) | [← Back to Home](index.html)
