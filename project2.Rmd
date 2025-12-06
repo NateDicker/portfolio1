@@ -4,7 +4,7 @@ title: "Business Insights Report"
 
 
 ```{r, include=FALSE}
-business_data <- read.csv("data/business_performance.csv")
+business_data <- read.csv("business_performance.csv")
 
 library(ggplot2)
 ```
@@ -177,3 +177,4 @@ In other words, the retail channel demonstrates the highest profit per customer.
 ---
 
 [← Back to Projects](projects.html) | [← Back to Home](index.html)
+
